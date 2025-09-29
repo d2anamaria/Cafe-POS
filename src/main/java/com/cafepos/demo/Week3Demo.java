@@ -36,7 +36,7 @@ public final class Week3Demo {
         Order order3= new Order(OrderIds.next());
         order3.addItem(new LineItem(catalog.findById("P-ESP").orElseThrow(), 2));
         order3.addItem(new LineItem(catalog.findById("P-CCK").orElseThrow(), 1));
-        System.out.println("Order #" + order3.id() + " Total: " + order1.totalWithTax(10));
+        System.out.println("Order #" + order3.id() + " Total: " + order3.totalWithTax(10));
         order3.pay(new WalletPayment("alice-wallet-01"));
 
     }
