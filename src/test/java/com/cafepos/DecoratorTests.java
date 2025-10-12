@@ -49,11 +49,11 @@ class DecoratorTests {
     @Test
     void decoration_order_independence() {
         Product espresso1 = new SimpleProduct("P-ESP", "Espresso", Money.of(2.50));
-        Product order1 = new OatMilk(new ExtraShot(espresso1)); // SHOT then OAT
+        Product order1 = new OatMilk(new ExtraShot(espresso1));
 
 
         Product espresso2 = new SimpleProduct("P-ESP", "Espresso", Money.of(2.50));
-        Product order2 = new ExtraShot(new OatMilk(espresso2)); // OAT then SHOT
+        Product order2 = new ExtraShot(new OatMilk(espresso2));
 
         assertEquals(((Priced) order1).price(), ((Priced) order2).price());
         assertTrue(order1.name().contains("Extra Shot"));

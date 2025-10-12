@@ -61,10 +61,6 @@ public final class Week5Demo {
             String qtyInput = scanner.nextLine().trim();
             int quantity = Integer.parseInt(qtyInput);
 
-            if (quantity <= 0) {
-                System.out.println("Quantity must be positive.");
-                return;
-            }
 
             currentOrder.addItem(new LineItem(product, quantity));
             System.out.println("✓ Added: " + product.name() + " x" + quantity);
