@@ -51,5 +51,11 @@ public final class Money implements Comparable<Money> {
     public String toString() {
         return amount.toString();
     }
+    public BigDecimal asBigDecimal() {
+        return amount;
+    }
 
+    public static Money of(BigDecimal value) {
+        return new Money(value);
+    }
 }
