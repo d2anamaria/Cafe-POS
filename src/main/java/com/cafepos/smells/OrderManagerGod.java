@@ -16,7 +16,8 @@ public class OrderManagerGod {
         Product product = factory.create(recipe);
         Money unitPrice;
         try {
-            var priced = product instanceof com.cafepos.catalog.Priced p ? p.price() : product.basePrice();            unitPrice = priced;
+            var priced = product instanceof com.cafepos.catalog.Priced p ? p.price() : product.basePrice();
+            unitPrice = priced;
         } catch (Exception e) {
             unitPrice = product.basePrice();
         }
