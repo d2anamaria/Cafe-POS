@@ -52,4 +52,12 @@ public final class Money implements Comparable<Money> {
         return amount.toString();
     }
 
+    public BigDecimal asBigDecimal() {
+        return amount;
+    }
+
+    public static Money of(BigDecimal value) {
+        return new Money(value);
+    }
+
 }
