@@ -2,10 +2,13 @@ package com.cafepos.checkout;
 
 import com.cafepos.catalog.Product;
 import com.cafepos.common.Money;
+import com.cafepos.domain.LineItem;
 import com.cafepos.factory.ProductFactory;
+import com.cafepos.payment.PaymentStrategy;
 import com.cafepos.pricing.PricingService;
 import com.cafepos.pricing.ReceiptPrinter;
 import com.cafepos.pricing.FixedRateTaxPolicy;
+import com.cafepos.domain.Order;
 
 public final class CheckoutService {
     private final ProductFactory factory;
@@ -20,12 +23,18 @@ public final class CheckoutService {
         this.taxPolicy = taxPolicy;
     }
 
-    public String checkout(String recipe, int qty) {
+    public String checkout(String recipe, int qty, PaymentStrategy payment) {
         Product product = factory.create(recipe);
         if (qty <= 0) qty = 1;
         Money unit = (product instanceof com.cafepos.catalog.Priced p) ? p.price() : product.basePrice();
         Money subtotal = unit.multiply(qty);
         var result = pricing.price(subtotal);
+
+        Order order = new Order(System.currentTimeMillis());
+        order.addItem(new LineItem(product, qty));
+
+        payment.pay(order);
+
         return printer.format(recipe, qty, result, taxPolicy);
     }
 }

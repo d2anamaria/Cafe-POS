@@ -1,5 +1,6 @@
 package com.cafepos.demo;
 
+import com.cafepos.payment.CardPayment;
 import com.cafepos.smells.OrderManagerGod;
 import com.cafepos.factory.ProductFactory;
 import com.cafepos.pricing.*;
@@ -17,7 +18,8 @@ public final class Week6Demo {
         var printer = new ReceiptPrinter();
         var checkout = new CheckoutService(new ProductFactory(), pricing, printer, taxPolicy);
 
-        String newReceipt = checkout.checkout("LAT+L", 2);
+        var payment = new CardPayment("1234567812341234");
+        String newReceipt = checkout.checkout("LAT+L", 2, payment);
 
         System.out.println("Old Receipt:\n" + oldReceipt);
         System.out.println("\nNew Receipt:\n" + newReceipt);
