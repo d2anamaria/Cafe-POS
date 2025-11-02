@@ -6,7 +6,8 @@ public final class PayOrderCommand implements Command {
     private final int taxPercent;
 
     public PayOrderCommand(OrderService service, PaymentStrategy strategy, int taxPercent) {
-        this.service = service; this.strategy = strategy;
+        this.service = service;
+        this.strategy = strategy;
         this.taxPercent = taxPercent;
     }
 
