@@ -25,6 +25,7 @@ public final class OrderService {
         if (!items.isEmpty()) {
             LineItem last = items.get(items.size()-1);
             order.removeItem(last);
+            System.out.println("[Service] Removed last item");
         }
 //        REFLECTION VERSION:
 //            var last = items.get(items.size()-1);
@@ -45,9 +46,8 @@ public final class OrderService {
     }
 
     public void pay(PaymentStrategy strategy, int taxPercent) {
-        // Usually you'd call order.pay(strategy), here we display a payment using the computed total
         var total = order.totalWithTax(taxPercent);
-        strategy.pay(order);
+        order.pay(strategy);
         System.out.println("[Service] Payment processed for total " + total);
     }
     public Order order() { return order; }

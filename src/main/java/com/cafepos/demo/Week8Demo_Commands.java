@@ -1,10 +1,16 @@
 package com.cafepos.demo;
+import com.cafepos.observer.CustomerNotifier;
+import com.cafepos.observer.DeliveryDesk;
+import com.cafepos.observer.KitchenDisplay;
 import com.cafepos.order.*;
 import com.cafepos.payment.*;
 import com.cafepos.command.*;
 public final class Week8Demo_Commands {
     public static void main(String[] args) {
         Order order = new Order(OrderIds.next());
+//        order.register(new KitchenDisplay());
+//        order.register(new CustomerNotifier());
+//        order.register(new DeliveryDesk());
         OrderService service = new OrderService(order);
         PosRemote remote = new PosRemote(3);
         remote.setSlot(0, new AddItemCommand(service,
