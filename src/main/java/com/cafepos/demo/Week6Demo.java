@@ -3,7 +3,7 @@ package com.cafepos.demo;
 import com.cafepos.payment.CardPayment;
 import com.cafepos.smells.OrderManagerGod;
 import com.cafepos.factory.ProductFactory;
-import com.cafepos.pricing.*;
+import com.cafepos.checkout.*;
 import com.cafepos.checkout.CheckoutService;
 
 public final class Week6Demo {

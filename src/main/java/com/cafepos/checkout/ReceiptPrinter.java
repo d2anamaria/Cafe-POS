@@ -1,4 +1,4 @@
-package com.cafepos.pricing;
+package com.cafepos.checkout;
 
 public final class ReceiptPrinter {
     public String format(String recipe, int qty, PricingService.PricingResult pr, FixedRateTaxPolicy taxPolicy) {

@@ -1,9 +1,6 @@
 package com.cafepos;
 
-import com.cafepos.catalog.SimpleProduct;
 import com.cafepos.common.Money;
-import com.cafepos.domain.LineItem;
-import com.cafepos.domain.Order;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
