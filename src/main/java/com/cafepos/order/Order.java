@@ -1,4 +1,4 @@
-package com.cafepos.domain;
+package com.cafepos.order;
 
 import com.cafepos.common.Money;
 import com.cafepos.observer.OrderObserver;
@@ -52,6 +52,12 @@ public final class Order implements OrderPublisher {
     public void addItem(LineItem li) {
         items.add(li);
         notifyObservers("itemAdded");
+    }
+
+    public void removeItem(LineItem li) {
+        if(!items.isEmpty())
+            items.remove(li);
+        notifyObservers("itemRemoved");
     }
 
     public void pay(PaymentStrategy strategy) {

@@ -1,7 +1,7 @@
 package com.cafepos;
 
 import com.cafepos.common.Money;
-import com.cafepos.pricing.*;
+import com.cafepos.checkout.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

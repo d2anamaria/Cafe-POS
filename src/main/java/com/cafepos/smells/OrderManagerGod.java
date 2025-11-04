@@ -2,6 +2,7 @@ package com.cafepos.smells;
 
 
 import com.cafepos.common.Money;
+import com.cafepos.decorator.Priced;
 import com.cafepos.factory.ProductFactory;
 import com.cafepos.catalog.Product;
 
@@ -24,7 +25,7 @@ public class OrderManagerGod {
         // Feature Envy — logic depends on Product internals
         // Inappropriate Intimacy
         try {
-            var priced = product instanceof com.cafepos.catalog.Priced p ? p.price() : product.basePrice();
+            var priced = product instanceof Priced p ? p.price() : product.basePrice();
             unitPrice = priced;
         } catch (Exception e) {
             unitPrice = product.basePrice();
