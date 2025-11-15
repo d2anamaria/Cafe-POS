@@ -2,7 +2,7 @@ package com.cafepos.command;
 import com.cafepos.catalog.Product;
 import com.cafepos.common.Money;
 import com.cafepos.factory.ProductFactory;
-import com.cafepos.order.LineItem;
+import com.cafepos.domain.LineItem;
 import com.cafepos.domain.Order;
 import com.cafepos.payment.PaymentStrategy;
 

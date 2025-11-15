@@ -1,9 +1,10 @@
 package com.cafepos.demo;
+import com.cafepos.domain.LineItem;
 import com.cafepos.domain.Order;
+import com.cafepos.domain.OrderIds;
 import com.cafepos.observer.CustomerNotifier;
 import com.cafepos.observer.DeliveryDesk;
 import com.cafepos.observer.KitchenDisplay;
-import com.cafepos.order.*;
 import com.cafepos.payment.*;
 import com.cafepos.command.*;
 import java.util.Scanner;

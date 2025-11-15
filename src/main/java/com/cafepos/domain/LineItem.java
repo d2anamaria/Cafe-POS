@@ -1,4 +1,4 @@
-package com.cafepos.order;
+package com.cafepos.domain;
 
 import com.cafepos.decorator.Priced;
 import com.cafepos.catalog.Product;

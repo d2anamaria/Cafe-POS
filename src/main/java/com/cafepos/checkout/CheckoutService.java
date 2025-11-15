@@ -3,7 +3,7 @@ package com.cafepos.checkout;
 import com.cafepos.catalog.Product;
 import com.cafepos.common.Money;
 import com.cafepos.decorator.Priced;
-import com.cafepos.order.LineItem;
+import com.cafepos.domain.LineItem;
 import com.cafepos.factory.ProductFactory;
 import com.cafepos.payment.PaymentStrategy;
 import com.cafepos.domain.Order;
