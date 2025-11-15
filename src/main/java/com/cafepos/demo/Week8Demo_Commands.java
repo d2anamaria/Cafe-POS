@@ -1,4 +1,5 @@
 package com.cafepos.demo;
+import com.cafepos.domain.Order;
 import com.cafepos.observer.CustomerNotifier;
 import com.cafepos.observer.DeliveryDesk;
 import com.cafepos.observer.KitchenDisplay;

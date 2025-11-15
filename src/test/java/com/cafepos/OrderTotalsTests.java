@@ -3,7 +3,7 @@ package com.cafepos;
 import com.cafepos.catalog.SimpleProduct;
 import com.cafepos.common.Money;
 import com.cafepos.order.LineItem;
-import com.cafepos.order.Order;
+import com.cafepos.domain.Order;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

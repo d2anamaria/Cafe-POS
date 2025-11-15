@@ -1,6 +1,6 @@
 package com.cafepos.observer;
 
-import com.cafepos.order.Order;
+import com.cafepos.domain.Order;
 
 public interface OrderPublisher {
     void register(OrderObserver o);

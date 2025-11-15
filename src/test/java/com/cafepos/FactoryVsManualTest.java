@@ -6,7 +6,7 @@ import com.cafepos.catalog.SimpleProduct;
 import com.cafepos.common.Money;
 import com.cafepos.decorator.*;
 import com.cafepos.order.LineItem;
-import com.cafepos.order.Order;
+import com.cafepos.domain.Order;
 import com.cafepos.factory.ProductFactory;
 import org.junit.jupiter.api.Test;
 

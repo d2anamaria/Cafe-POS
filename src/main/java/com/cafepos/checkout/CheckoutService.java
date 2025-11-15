@@ -6,7 +6,7 @@ import com.cafepos.decorator.Priced;
 import com.cafepos.order.LineItem;
 import com.cafepos.factory.ProductFactory;
 import com.cafepos.payment.PaymentStrategy;
-import com.cafepos.order.Order;
+import com.cafepos.domain.Order;
 
 public final class CheckoutService {
     private final ProductFactory factory;

@@ -1,8 +1,9 @@
-package com.cafepos.order;
+package com.cafepos.domain;
 
 import com.cafepos.common.Money;
 import com.cafepos.observer.OrderObserver;
 import com.cafepos.observer.OrderPublisher;
+import com.cafepos.order.LineItem;
 import com.cafepos.payment.PaymentStrategy;
 import java.util.*;
 
