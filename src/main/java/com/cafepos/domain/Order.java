@@ -70,9 +70,7 @@ public final class Order implements OrderPublisher {
         notifyObservers("ready");
     }
 
-    public String id() {
-        return String.valueOf(id);
-    }
+    public long id() { return id; }
     public List<LineItem> items() {
         return items;
     }
