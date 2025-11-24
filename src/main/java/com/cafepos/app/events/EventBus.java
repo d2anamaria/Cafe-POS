@@ -1,4 +1,4 @@
-package com.cafepos.events;
+package com.cafepos.app.events;
 
 import java.util.*;
 import java.util.function.Consumer;

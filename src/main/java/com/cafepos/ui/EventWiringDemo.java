@@ -1,6 +1,8 @@
 package com.cafepos.ui;
 
-import com.cafepos.events.*;
+import com.cafepos.app.events.EventBus;
+import com.cafepos.app.events.OrderCreated;
+import com.cafepos.app.events.OrderPaid;
 import com.cafepos.infra.Wiring;
 
 public final class EventWiringDemo {
