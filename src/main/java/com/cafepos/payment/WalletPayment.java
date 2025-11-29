@@ -1,6 +1,6 @@
 package com.cafepos.payment;
 
-import com.cafepos.order.Order;
+import com.cafepos.domain.Order;
 
 import java.util.Objects;
 
