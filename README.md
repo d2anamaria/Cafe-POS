@@ -161,3 +161,30 @@ But nothing stops clients from calling add() or remove() on a leaf if they have 
 - The OrderFSM object delegates work to its current state, so the behaviour of each method depends on which state it is in.
 - Each state encapsulates its own valid transitions, removing the need for central if(state==X) checks.
 - This makes it simple to change behavior dynamically and prevents illegal actions cleanly.
+
+# [Week 10 System Architecture]
+
+## 1. System Architecture Diagram
+The following diagram illustrates the four-layer architecture (Presentation, Application, Domain, Infrastructure), showing entity relationships and the strict inward-facing dependency flow.
+
+![Architecture Diagram](FullArchitectureDiagram.jpg)
+*(Place your PlantUML/Mermaid/Image file in the project folder and update the link above)*
+
+---
+
+## 2. Architectural Trade-offs: Layering vs. Partitioning
+
+**Why a Layered Monolith?**
+For the current phase of the Café POS system, we used a **Layered Monolith** architecture. This decision facilitates development speed and simplicity. A monolith eliminates the operational bottlenecks of distributed systems, like network latency, serialization costs, and eventual consistency issues.It also simplifies debugging and testing within a single process.
+
+**Future Seams & Partitioning**
+However, the architecture is designed with modularity in mind, creating clear seams for future partitioning. The elements which should be elected for extraction into independent services are:
+1.  **Payments:** This domain has strict security and compliance requirements distinct from the core order logic.
+2.  **Notifications / Kitchen Display:** This logic is  asynchronous and runs on physically different hardware.
+
+**Connectors & Protocols**
+To facilitate a future split, the system currently uses an in-process `EventBus` to decouple layers. In a distributed architecture, this would be upgraded to external connectors:
+* **REST or gRPC APIs** for synchronous operations (e.g., authorizing a payment).
+* **Message Queues** (e.g., RabbitMQ or Kafka) for asynchronous, event-driven updates to the Kitchen or Delivery systems.
+
+This approach ensures the system remains simple today but is architecturally ready to scale tomorrow.
