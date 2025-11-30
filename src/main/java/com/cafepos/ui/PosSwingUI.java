@@ -24,6 +24,8 @@ public final class PosSwingUI extends JFrame {
         this.controller = new OrderController(comp.repo(), comp.checkout());
         this.bus = new EventBus();
 
+        wireEventListeners();   // <-- NEW
+
         newOrder();
         initUI();
 
@@ -32,10 +34,28 @@ public final class PosSwingUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    // -----------------------------------------------------
+    // LISTEN TO EVENTS THAT ACTUALLY EXIST IN YOUR PROJECT
+    // -----------------------------------------------------
+    private void wireEventListeners() {
+
+        // Update window title when order is created
+        bus.on(OrderCreated.class, e ->
+                setTitle("Café POS - Order #" + e.orderId())
+        );
+
+        // Update receipt when order is paid
+        bus.on(OrderPaid.class, e ->
+                receiptArea.setText(controller.checkout(e.orderId(), 10))
+        );
+    }
+
     private void newOrder() {
         this.orderId = OrderIds.next();
         controller.createOrder(orderId);
-        setTitle("Café POS - Order #" + orderId);
+
+        // Emit the event so UI updates title
+        bus.emit(new OrderCreated(orderId));
     }
 
     private void initUI() {
@@ -84,9 +104,11 @@ public final class PosSwingUI extends JFrame {
     private void addItem(String recipe) {
         try {
             controller.addItem(orderId, recipe, 1);
+
             var product = new ProductFactory().create(recipe);
             cartModel.addElement(product.name() + " - " +
                     (product instanceof com.cafepos.decorator.Priced p ? p.price() : product.basePrice()));
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
         }
@@ -97,8 +119,9 @@ public final class PosSwingUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Cart is empty!");
             return;
         }
-        String receipt = controller.checkout(orderId, 10);
-        receiptArea.setText(receipt);
+
+        // Emit only the event; UI will react via listener
+        bus.emit(new OrderPaid(orderId));
 
         cartModel.clear();
         newOrder();
