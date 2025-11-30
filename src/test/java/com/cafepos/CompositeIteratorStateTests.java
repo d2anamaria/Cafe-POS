@@ -7,8 +7,8 @@ import com.cafepos.factory.ProductFactory;
 import com.cafepos.menu.Menu;
 import com.cafepos.menu.MenuComponent;
 import com.cafepos.menu.MenuItem;
-import com.cafepos.order.LineItem;
-import com.cafepos.order.Order;
+import com.cafepos.domain.LineItem;
+import com.cafepos.domain.Order;
 import com.cafepos.state.OrderFSM;
 import org.junit.jupiter.api.Test;
 

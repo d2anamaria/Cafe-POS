@@ -1,8 +1,8 @@
 package com.cafepos;
 
 import com.cafepos.command.*;
-import com.cafepos.order.Order;
-import com.cafepos.order.OrderIds;
+import com.cafepos.domain.Order;
+import com.cafepos.domain.OrderIds;
 import com.cafepos.payment.CardPayment;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
