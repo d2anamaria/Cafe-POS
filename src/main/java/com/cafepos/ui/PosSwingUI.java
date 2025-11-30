@@ -24,7 +24,7 @@ public final class PosSwingUI extends JFrame {
         this.controller = new OrderController(comp.repo(), comp.checkout());
         this.bus = new EventBus();
 
-        wireEventListeners();   // <-- NEW
+        wireEventListeners();
 
         newOrder();
         initUI();
@@ -34,17 +34,12 @@ public final class PosSwingUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    // -----------------------------------------------------
-    // LISTEN TO EVENTS THAT ACTUALLY EXIST IN YOUR PROJECT
-    // -----------------------------------------------------
     private void wireEventListeners() {
 
-        // Update window title when order is created
         bus.on(OrderCreated.class, e ->
                 setTitle("Café POS - Order #" + e.orderId())
         );
 
-        // Update receipt when order is paid
         bus.on(OrderPaid.class, e ->
                 receiptArea.setText(controller.checkout(e.orderId(), 10))
         );
@@ -54,7 +49,6 @@ public final class PosSwingUI extends JFrame {
         this.orderId = OrderIds.next();
         controller.createOrder(orderId);
 
-        // Emit the event so UI updates title
         bus.emit(new OrderCreated(orderId));
     }
 
@@ -120,7 +114,6 @@ public final class PosSwingUI extends JFrame {
             return;
         }
 
-        // Emit only the event; UI will react via listener
         bus.emit(new OrderPaid(orderId));
 
         cartModel.clear();
