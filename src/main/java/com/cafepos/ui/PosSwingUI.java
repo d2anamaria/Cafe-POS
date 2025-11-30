@@ -1,155 +1,98 @@
 package com.cafepos.ui;
 
-import com.cafepos.events.*;
 import com.cafepos.domain.*;
-import com.cafepos.events.EventBus;
+import com.cafepos.events.*;
 import com.cafepos.factory.ProductFactory;
 import com.cafepos.infra.Wiring;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public final class PosSwingUI extends JFrame {
-    private final OrderController controller;
+    private OrderController controller;
     private final EventBus bus;
-    private final Wiring.Components comp;
     private long orderId;
+    private Wiring.Components comp;
 
     private final DefaultListModel<String> cartModel = new DefaultListModel<>();
-    private final JTextArea receiptArea = new JTextArea(10, 25);
-    private final JTextArea kitchenLog = new JTextArea(10, 25);
-    private final JLabel lblStatus = new JLabel("STATE: NEW");
-    private final JPanel productPanel = new JPanel(new GridLayout(0, 2, 5, 5));
-    private final JCheckBox chkVeg = new JCheckBox("Vegetarian Only");
-
-    private final String[][] allProducts = {
-            {"Espresso", "ESP"},
-            {"Espresso + Shot", "ESP+SHOT"},
-            {"Latte", "LAT"},
-            {"Latte Large", "LAT+L"},
-            {"Latte + Oat", "LAT+OAT"},
-            {"Cappuccino", "CAP"},
-            {"Cap + Syrup", "CAP+SYP"},
-    };
+    private final JList<String> cartList = new JList<>(cartModel);
+    private final JTextArea receiptArea = new JTextArea(12, 30);
 
     public PosSwingUI() {
-        super("Café POS - Architectural Demo");
+        super("Café POS");
         this.comp = Wiring.createDefault();
         this.controller = new OrderController(comp.repo(), comp.checkout());
         this.bus = new EventBus();
 
         wireEventListeners();
-        initUI();
+
         newOrder();
+        initUI();
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(900, 600);
+        setSize(700, 500);
         setLocationRelativeTo(null);
     }
 
     private void wireEventListeners() {
-        bus.on(OrderCreated.class, e -> {
-            setTitle("Café POS - Order #" + e.orderId());
-            lblStatus.setText("STATE: NEW");
-            lblStatus.setForeground(Color.BLUE);
-            logKitchen("New Order Started: #" + e.orderId());
-        });
 
-        bus.on(OrderPaid.class, e -> {
-            lblStatus.setText("STATE: PAID / PREPARING");
-            lblStatus.setForeground(new Color(0, 128, 0));
-            String receipt = controller.checkout(e.orderId(), 10);
-            receiptArea.setText(receipt);
+        bus.on(OrderCreated.class, e ->
+                setTitle("Café POS - Order #" + e.orderId())
+        );
 
-            logKitchen("$$ Order #" + e.orderId() + " PAID. Preparing items...");
-        });
+        bus.on(OrderPaid.class, e ->
+                receiptArea.setText(controller.checkout(e.orderId(), 10))
+        );
     }
 
     private void newOrder() {
         this.orderId = OrderIds.next();
         controller.createOrder(orderId);
-        cartModel.clear();
-        receiptArea.setText("");
+
         bus.emit(new OrderCreated(orderId));
     }
 
     private void initUI() {
         setLayout(new BorderLayout(10, 10));
 
-        JPanel leftContainer = new JPanel(new BorderLayout(5, 5));
-        leftContainer.setBorder(BorderFactory.createTitledBorder("Menu (Composite/Iterator)"));
+        JPanel productPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+        productPanel.setBorder(BorderFactory.createTitledBorder("Products"));
 
-        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        chkVeg.addActionListener(e -> renderProductButtons());
-        filterPanel.add(chkVeg);
+        String[][] products = {
+                {"Espresso", "ESP"},
+                {"Espresso + Shot", "ESP+SHOT"},
+                {"Latte", "LAT"},
+                {"Latte Large", "LAT+L"},
+                {"Latte + Oat", "LAT+OAT"},
+                {"Cappuccino", "CAP"},
+                {"Cap + Syrup", "CAP+SYP"},
+        };
 
-        renderProductButtons();
-
-        leftContainer.add(filterPanel, BorderLayout.NORTH);
-        leftContainer.add(new JScrollPane(productPanel), BorderLayout.CENTER);
-
-        JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
-        centerPanel.setBorder(BorderFactory.createTitledBorder("Current Order"));
-
-        lblStatus.setFont(new Font("Arial", Font.BOLD, 14));
-        lblStatus.setHorizontalAlignment(SwingConstants.CENTER);
-        centerPanel.add(lblStatus, BorderLayout.NORTH);
-
-        centerPanel.add(new JScrollPane(new JList<>(cartModel)), BorderLayout.CENTER);
-
-        JPanel controls = new JPanel(new GridLayout(1, 2, 5, 5));
-        JButton btnUndo = new JButton("Undo Last");
-        btnUndo.addActionListener(e -> performUndo());
-        JButton btnCheckout = new JButton("Pay & Checkout");
-        btnCheckout.setFont(new Font("Arial", Font.BOLD, 12));
-        btnCheckout.setBackground(new Color(29, 226, 29));
-        btnCheckout.addActionListener(e -> checkout());
-
-        controls.add(btnUndo);
-        controls.add(btnCheckout);
-        centerPanel.add(controls, BorderLayout.SOUTH);
-
-        JPanel rightPanel = new JPanel(new GridLayout(2, 1, 5, 5));
-
-        JPanel pnlReceipt = new JPanel(new BorderLayout());
-        pnlReceipt.setBorder(BorderFactory.createTitledBorder("Customer Receipt"));
-        receiptArea.setFont(new Font("Monospaced", Font.PLAIN, 11));
-        pnlReceipt.add(new JScrollPane(receiptArea));
-
-        JPanel pnlKitchen = new JPanel(new BorderLayout());
-        pnlKitchen.setBorder(BorderFactory.createTitledBorder("Kitchen Display (Observer)"));
-        pnlKitchen.setBackground(Color.BLACK);
-        kitchenLog.setBackground(Color.BLACK);
-        kitchenLog.setForeground(Color.GREEN);
-        kitchenLog.setFont(new Font("Monospaced", Font.BOLD, 12));
-        pnlKitchen.add(new JScrollPane(kitchenLog));
-
-        rightPanel.add(pnlReceipt);
-        rightPanel.add(pnlKitchen);
-
-        add(leftContainer, BorderLayout.WEST);
-        add(centerPanel, BorderLayout.CENTER);
-        add(rightPanel, BorderLayout.EAST);
-    }
-
-
-    private void renderProductButtons() {
-        productPanel.removeAll();
-        boolean vegOnly = chkVeg.isSelected();
-
-        for (String[] p : allProducts) {
-            boolean isVeg = p[0].contains("Oat") || p[0].contains("Espresso");
-
-            if (vegOnly && !isVeg) continue;
-
-            JButton btn = new JButton("<html><center>"+p[0]+"</center></html>");
+        for (String[] p : products) {
+            JButton btn = new JButton(p[0]);
             btn.addActionListener(e -> addItem(p[1]));
             productPanel.add(btn);
         }
-        productPanel.revalidate();
-        productPanel.repaint();
+
+        JPanel cartPanel = new JPanel(new BorderLayout());
+        cartPanel.setBorder(BorderFactory.createTitledBorder("Cart"));
+        cartList.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        cartPanel.add(new JScrollPane(cartList), BorderLayout.CENTER);
+
+        JPanel rightPanel = new JPanel(new BorderLayout(5, 5));
+        rightPanel.setBorder(BorderFactory.createTitledBorder("Receipt"));
+        receiptArea.setEditable(false);
+        receiptArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        rightPanel.add(new JScrollPane(receiptArea), BorderLayout.CENTER);
+
+        JButton checkoutBtn = new JButton("Checkout");
+        checkoutBtn.setFont(new Font("Arial", Font.BOLD, 14));
+        checkoutBtn.addActionListener(e -> checkout());
+        rightPanel.add(checkoutBtn, BorderLayout.SOUTH);
+
+        add(productPanel, BorderLayout.WEST);
+        add(cartPanel, BorderLayout.CENTER);
+        add(rightPanel, BorderLayout.EAST);
     }
 
     private void addItem(String recipe) {
@@ -157,40 +100,27 @@ public final class PosSwingUI extends JFrame {
             controller.addItem(orderId, recipe, 1);
 
             var product = new ProductFactory().create(recipe);
-            cartModel.addElement(product.name());
-
-            logKitchen(" + PREP: " + product.name());
+            cartModel.addElement(product.name() + " - " +
+                    (product instanceof com.cafepos.decorator.Priced p ? p.price() : product.basePrice()));
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
         }
     }
 
-    private void performUndo() {
-        if (!cartModel.isEmpty()) {
-            String removed = cartModel.remove(cartModel.getSize() - 1);
-            logKitchen(" ! CANCEL ITEM: " + removed);
-        }
-    }
-
     private void checkout() {
-        if (cartModel.isEmpty()) return;
+        if (cartModel.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Cart is empty!");
+            return;
+        }
 
         bus.emit(new OrderPaid(orderId));
 
-        Timer t = new Timer(4000, e -> newOrder());
-        t.setRepeats(false);
-        t.start();
-    }
-
-    private void logKitchen(String msg) {
-        String time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-        kitchenLog.append("[" + time + "] " + msg + "\n");
-        kitchenLog.setCaretPosition(kitchenLog.getDocument().getLength());
+        cartModel.clear();
+        newOrder();
     }
 
     public static void main(String[] args) {
-        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception ignored) {}
         SwingUtilities.invokeLater(() -> new PosSwingUI().setVisible(true));
     }
 }
